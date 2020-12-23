@@ -39,6 +39,17 @@ The Data used for this project consist of renewable energy consumption beginning
 
 ```
 def seasonal_decomp(series):
+
+    """
+    gives the seasonal decomposition of a given series
+    --------------------------------------------------
+    Input:
+    series (series)
+    --------------------------------------------------
+    Output:
+    Seasonal decomposition plots
+    """
+    
     fig = plt.figure()  
     fig = seasonal_decompose(series).plot()  
     fig.set_size_inches(15, 12)
@@ -46,6 +57,21 @@ def seasonal_decomp(series):
 
 ```
 def test_stationarity(series, window, cutoff):
+    
+    """
+    Tests stationarity using Dickey-Fuller Test
+    -------------------------
+    Input:
+    series (series)
+    window (int): Size of the moving window for rolling mean and rolling standard deviation calculation.
+    cuttoff (float): cutoff for p-value to determine stationarity
+    -------------------------
+    Output:
+    Displays if the series is stationary
+    Displays the Dickey-Fuller Test Summary
+    ROlling mean and Rolling Standard Deviation Plots
+    """
+    
     rolmean = series.rolling(window).mean()
     rolstd = series.rolling(window).std()
     
@@ -70,7 +96,16 @@ def test_stationarity(series, window, cutoff):
  ```
  
  ```
- def shift(series,shift_no):
+def shift(series,shift_no):
+    
+    """
+    Shifts the time series to the given number of places
+    -------------------
+    Input:
+    Series (Series)
+    shift_no (int): the number of places that the series needs to shift
+    """
+    
     diff = series-series.shift(shift_no)
     diff = diff.dropna(inplace=False)
     return diff
@@ -78,6 +113,17 @@ def test_stationarity(series, window, cutoff):
  
  ```
  def p_acf(series):
+    
+    """
+    Builds the autocorrelation and partial correlation plots of a given series
+    ---------------
+    Input:
+    Series (series)
+    ---------------
+    Output:
+    statsmodel autocorrelation and partial correlation plot
+    """
+    
     fig = plt.figure(figsize=(12,8))
     ax1 = fig.add_subplot(211)
     fig = sm.graphics.tsa.plot_acf(series, ax=ax1) 
@@ -86,6 +132,22 @@ def test_stationarity(series, window, cutoff):
  ```
  
  ```def sarimax(df,p,d,q,P,D,Q,s):
+    
+    """Grid searches the best p,d,q based on the AIC values
+    -----------------
+    Input:
+    df (DataFrame): Data required to model SARIMAX model
+    p (range): AR component for ARIMA modelling
+    d (range): difference component for ARIMA modelling
+    q (range): MA component for ARIMA modelling
+    P (range): AR component for SARIMA modelling
+    D (range): difference component for SARIMA modelling
+    Q (range): MA component for SARIMA modelling
+    S (range): Seasonal component for SARIMA modelling
+    ------------------
+    Output:
+    Best order and seasonal order corresponding the lowest AIC value
+    """
     
     pdq = list(itertools.product(p,d,q))
     PDQs = [(x[0],x[1],x[2],s) for x in list(itertools.product(P,D,Q))]
@@ -110,6 +172,18 @@ def test_stationarity(series, window, cutoff):
 
 ```
 def arima(df,arima,sarima):
+    
+    """Fits statsmodel SARIMAX model given order and seasonal order
+    --------------
+    Input:
+    df (DataFrame): dataframe to be fit in the model
+    arima (tuple): order for ARIMA model
+    sarima (tuple):seasonal order for SARIMA model
+    --------------
+    Output
+    Statsmodel SARIMAX model
+    """
+    
     arima = sm.tsa.statespace.SARIMAX(df, order = arima, seasonal_order=sarima,
                                     enforce_stationarity=False, enforce_invertibility=False)
     output = arima.fit()
@@ -119,6 +193,23 @@ def arima(df,arima,sarima):
 
 ```
 def auto_arima(df,df_train, df_test,n_rows,seasonal=True, m=12):
+    
+    """Builds the best arima model from the p,q range of (0,5)
+    -----------------
+    Input:
+    df (DataFrame)
+    df_train (DataFrame): Train Split data
+    df_test (DtataFrame): Test split data
+    n_rows (integer): the value at which the train test split was made
+    seasonal (bool): Seasonality to include or not
+    m (int): seasonality
+    -----------------
+    Output:
+    Best Sarima Model
+    Best model summary
+    prediction plot
+    best model order and seasonal order
+    """
     
     model = pm.auto_arima(df_train, seasonal=seasonal, m=m)
 
@@ -152,7 +243,22 @@ def auto_arima(df,df_train, df_test,n_rows,seasonal=True, m=12):
 ```
 
 ```
-def forecast(model,df,forecast_start,steps=60,figsize=(20,15),color_conf='g',alpha_conf=0.3):
+def forecast(model,df,forecast_start,steps=60,figsize=(15,8),color_conf='g',alpha_conf=0.3):
+    
+    """gives a specified step dynamic forecast for a statsmodel SARIMAX model
+    --------------
+    Input:
+    model : Statsmodel SARIMAX model
+    df (DataFrame)
+    forecast_start (str): date in the format 'YYYY-MM-DD' where the forecast should start
+    steps (int): steps into the future the forecasts should be created. Default is 60
+    figsize (tuple): matplotlib figsize for the forecast output plot. default is (15,8)
+    color_conf (str): color of the confidence interval. default is g
+    alpha_conf (int)
+    --------------
+    Output:
+    Matplotlib Forecast plot with confidence interval
+    """
     
     forecast = model.get_forecast(steps=steps)
     ax = df.plot(label='Observed', figsize=figsize)
@@ -228,6 +334,7 @@ To tune the model for a better fit, the data was sliced to include only the rece
 <br />
 
 5 year forecast thus generated using this model is shown in Figure 7. It is seen that the consumption rates continue to plateau at fixed amounts with yearly seasonality.
+
 <br />
 
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/hyele_forecast.png">
@@ -237,79 +344,109 @@ To tune the model for a better fit, the data was sliced to include only the rece
 
 Figure 8 shows the seasonal decompose of geothermal energy consumption. The trend shows that geothermal energy consumption was growing at good rates in the begenning but have plateaued over the past couple of years, while the seasonal plot shows a clear annual seasonality.
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Seasonal_Decomp_Geo.png">
 <div align="center"> Figure 8: Seasonal Decompose - Geothermal Energy Consumption </div>
 <br />
+
 The Dicky-Fuller Stationarity test resulted in the series being non-stationary. The first difference was then tested as being stationary. Hence, d for ARIMA modelling would be 1, which was also seen in the results of auto arima.
 
-Auto correlation and partial correlation plots (Figure 9) of the differenced series was then used to to specify the range of p and q for ARIMA modelling. These were set at (0,5) for both p and q.
 <br />
+
+Auto correlation and partial correlation plots (Figure 9) of the differenced series was then used to to specify the range of p and q for ARIMA modelling. These were set at (0,5) for both p and q.
+
+<br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/PAC-AC-Geo.png">
 <div align="center"> Figure 9: Partial and Autocorrelation Plots - Geothermal Energy Consumption </div>
 <br />
 Using these values, an ARIMA model was then fit with the seasonal component set at 12. The output of this model is shown in Figure 10.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/geo_1.png">
 <div align="center"> Figure 10: Geothermal Energy Consumption Model Output </div>
 <br />
 Figure 11 shows the 5 year forecasts generated using this model. It is seen that the consumption rates continue to plateau at fixed amounts with yearly seasonality. The forecasts are however less trustable for the years farther down as the confidence interval increases.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/geo_forecast.png">
 <div align="center"> Figure 11: Geothermal Energy Consumption - 5 year Forecast </div>
 
 ### Solar Energy Consumption
 
 Figure 12 shows the seasonal decompose of solar energy consumption. The trend shows that solar energy consumption was only recently recognized and has been growing at tremendous rates after that. The seasonal plot shows a clear annual seasonality. The data was modified to exclude the years where there was no data available.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Seasonal_Decomp_Solar.png">
 <div align="center"> Figure 12: Seasonal Decompose - Solar Energy Consumption </div>
 <br />
 Since there was a sudden increase in the rates of consumption for solar energy, it was paramount to feed more of the recent data in the training set for modelling. Figure 13 shows the output of the ARIMA model thus fit with seasonal component set at 12.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/solar_1.png">
 <div align="center"> Figure 13: Solar Energy Consumption Model Output </div>
 <br />
 Figure 14 shows the 5 year forecasts generated using this model. It is seen that the consumption rates continue to rise at elevated rates and continued yearly seasonality.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/solar_forecast.png">
 <div align="center"> Figure 14: Solar Energy Consumption - 5 year Forecast </div>
 
 ### Wind Energy Consumption
 
 Figure 15 shows the seasonal decompose of wind energy consumption. The trend shows that similar to solar, wind energy consumption was also only recently recognized and has been growing at tremendous rates after that. The seasonal plot shows a clear annual seasonality. The data was modified to exclude the years where there was no data available.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Seasonal_Decomp_Wind.png">
 <div align="center"> Figure 15: Seasonal Decompose - Wind Energy Consumption </div>
 <br />
 Since there was a sudden increase in the rates of consumption for solar energy, it was paramount to feed more of the recent data in the training set for modelling. Figure 16 shows the output of the ARIMA model thus fit with seasonal component set at 12.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/wind_1.png">
 <div align="center"> Figure 16: Wind Energy Consumption Model Output </div>
 <br />
 Figure 17 shows the 5 year forecasts generated using this model. It is seen that the consumption rates continue to rise at elevated rates and continued yearly seasonality.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Wind_forecast.png">
 <div align="center"> Figure 17: Wind Energy Consumption - 5 year Forecast </div>
 
 ### Wood Energy Consumption
 
 Figure 18 shows the seasonal decompose of geothermal energy consumption. The trend seems pretty stationary. Dickey-Fuller test for stationarity however showed otherwise. The first difference was then tested as being stationary. Hence, d for ARIMA modelling would be 1, which was also seen in the results of auto arima.The seasonal plot shows annual seasonality. There was a boom in the sector during the 1980's uptill 1990, afterwhich the industry fell and has since then remained more or less stagnant at 180 Trillion BTU.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Seasonal_Decomp_Wood.png">
 <div align="center"> Figure 18: Seasonal Decompose - Wood Energy Consumption </div>
 <br />
 Auto correlation and partial correlation plots (Figure 19) of the differenced series was then used to to specify the range of p and q for ARIMA modelling. These were set at (0,5) for both p and q.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/PAC-AC-Wood.png">
 <div align="center"> Figure 19: Partial and Autocorrelation Plots - Wood Energy Consumption </div>
 <br />
 Since the trend has not changed much within the last decade, only the data begenning 2010 is used for this model so as to minimize the influence of the golden decade for this sector.ARIMA model was then fit with the seasonal component set at 12. The output of this model is shown in Figure 20.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/wood_1.png">
 <div align="center"> Figure 20: Wood Energy Consumption Model Output </div>
 <br />
 Figure 21 shows the 5 year forecasts generated using this model. It is seen that the consumption rates continue to plateau at fixed amounts with yearly seasonality. The forecasts are however less trustable for the years farther down as the confidence interval increases.
+
 <br />
+
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/wood_forecast.png">
 <div align="center"> Figure 21: Wood Energy Consumption - 5 year Forecast </div>
 
