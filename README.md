@@ -176,11 +176,11 @@ The consumption rates of all sources were first compared to get a better underst
 <br />
 
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Renewable_Current_All.png">
-<div align="center" font-style="italic"> Figure 1: Current Trends in Renewable Energy Consumption </div>
+*<div align="center"> Figure 1: Current Trends in Renewable Energy Consumption </div>*
 <br />
 
 <img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/Renewable_Current_All_Y.png">
-<div align="center"> *Figure 2: Current Trends in Renewable Energy Consumption (Annual)* </div>
+*<div align="center"> Figure 2: Current Trends in Renewable Energy Consumption (Annual)</div>*
 <br />
 
 Figure 1 and 2 illustrate the present scenario of the various total renewable energy consumptions beginning 1973. It is seen that hydroelectric power consumption has always been plateaued at the heighest levels averaging at about 250 Trillion BTU. Wood energ consumption started increasing up till 1980 and then plateaued at 175 Trillion BTU. Geo Thermal Energy consumption is only slightly increasing, almost constant at the lowest value. currently at about 10 Trillion BTU. Wind and Solar Energy have only recently gained popularity and are growing at tremendous rates compared to the other sources of renewables. Large amount of research and innovation is seen in these sectors along with an increase in the number of residential and commercial projects.
