@@ -312,7 +312,7 @@ Figure 3 shows the seasonal decompose of hydroelectric power consumption. No cle
 </p>
 <br />
 
-Auto correlation and correlation plots (Figure 4) were then used to specify the range of p (AR component) and q (MA component) for ARIMA modelling.
+Autocorrelation and Partial correlation plots (Figure 4) were then used to specify the range of p (AR component) and q (MA component) for ARIMA modelling.
 <br />
 
 <center><img align="center" src="https://raw.githubusercontent.com/NehaP92/dsc-mod-4-project-v2-1-onl01-dtsc-pt-041320/master/PAC-AC-Hyele.png"></center>
